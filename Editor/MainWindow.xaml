@@ -1,22 +1,59 @@
 ﻿<Window
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d" x:Class="Editor.MainWindow"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:core="clr-namespace:System;assembly=mscorlib"
+    xmlns:local="clr-namespace:TraktorMapping.TSI.Format;assembly=TraktorMapping.TSI"
+    mc:Ignorable="d" x:Class="Editor.MainWindow"
         Title="MainWindow" Height="350" Width="525">
 
     <Window.Resources>
-        <CollectionViewSource x:Name="MappingsListSource" Source="{Binding}" x:Key="mappingsListSource">
-        </CollectionViewSource>
+        <ObjectDataProvider x:Key="MappingTargetDeck" MethodName="GetValues" ObjectType="{x:Type core:Enum}">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type Type="local:MappingTargetDeck"></x:Type>
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+        <ObjectDataProvider x:Key="ControllerTypeList" MethodName="GetValues" ObjectType="{x:Type core:Enum}">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type Type="local:MappingControllerType"></x:Type>
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+        <ObjectDataProvider x:Key="InteractionModeList" MethodName="GetValues" ObjectType="{x:Type core:Enum}">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type Type="local:MappingInteractionMode"></x:Type>
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
     </Window.Resources>
-
-    <Grid>
-        <DockPanel Margin="10,10,10,10.5">
-            <DockPanel Height="27" DockPanel.Dock="Top" Margin="5">
-                <Label Content="Search:" VerticalAlignment="Center"/>
-                <TextBox TextWrapping="Wrap" Text="sdfsdfsdf" Width="436" Padding="0,5" DockPanel.Dock="Right"/>
+    <DockPanel>
+        <Menu DockPanel.Dock="Top">
+            <MenuItem Header="_File">
+                <MenuItem Header="_Open" Click="OpenMenuItemClick" />
+                <MenuItem Header="_Save" Click="SaveTsi" />
+            </MenuItem>
+        </Menu>
+        <Grid>
+            <DockPanel Margin="10,10,10,10.5">
+                <DockPanel Height="27" DockPanel.Dock="Top" Margin="5">
+                    <Label Content="Search:" VerticalAlignment="Center"/>
+                    <TextBox TextWrapping="Wrap" Text="{Binding Path=Filter, UpdateSourceTrigger=PropertyChanged}" Width="436" Padding="0,5" DockPanel.Dock="Right"/>
+                </DockPanel>
+                <DataGrid x:Name="MappingsGrid" IsReadOnly="False" ItemsSource="{Binding Path=MappingView}" CanUserSortColumns="True" AutoGenerateColumns="False">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Id" Binding="{Binding Id}" IsReadOnly="True" />
+                        <DataGridTextColumn Header="MidiNote" Binding="{Binding MidiNote}" IsReadOnly="True" />
+                        <DataGridTextColumn Header="Type" Binding="{Binding Type}" IsReadOnly="True" />
+                        <DataGridTextColumn Header="Command" Binding="{Binding TraktorCommand}" IsReadOnly="True" />
+                        <DataGridTextColumn Header="Comment" Binding="{Binding Comment}" />
+                        <DataGridComboBoxColumn Header="Deck" SelectedItemBinding="{Binding Deck}" ItemsSource="{Binding Source={StaticResource MappingTargetDeck}}" />
+                        <DataGridComboBoxColumn Header="Control Type" SelectedItemBinding="{Binding ControllerType}" ItemsSource="{Binding Source={StaticResource ControllerTypeList}}" />
+                        <DataGridComboBoxColumn Header="Mode" SelectedItemBinding="{Binding InteractionMode}" ItemsSource="{Binding Source={StaticResource InteractionModeList}}" />
+                        <DataGridCheckBoxColumn Header="AutoRepeat" Binding="{Binding AutoRepeat}" />
+                        <DataGridCheckBoxColumn Header="Invert" Binding="{Binding Invert}" />
+                        <DataGridCheckBoxColumn Header="Soft Takeover" Binding="{Binding SoftTakeover}" />
+                    </DataGrid.Columns>
+                </DataGrid>
             </DockPanel>
-            <DataGrid x:Name="MappingsGrid" IsReadOnly="True" ItemsSource="{Binding Source={StaticResource ResourceKey=mappingsListSource}}" CanUserSortColumns="False"/>
-        </DockPanel>
 
-    </Grid>
+        </Grid>
+    </DockPanel>
 </Window>

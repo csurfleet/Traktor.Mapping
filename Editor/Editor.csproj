@@ -54,8 +54,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Controllers\MainWindowController.cs" />
+    <Compile Include="ViewModels\MainWindowModel.cs" />
     <Compile Include="ViewModels\MappingModel.cs" />
-    <Compile Include="ViewModels\MappingsObservableCollection.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
